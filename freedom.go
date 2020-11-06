@@ -170,6 +170,7 @@ type Application interface {
 	InstallMiddleware(handler iris.Handler)
 	InstallParty(relativePath string)
 	CreateH2CRunner(addr string, configurators ...host.Configurator) iris.Runner
+	CreateAutoTLSRunner(addr string, domain string, email string, configurators ...host.Configurator) iris.Runner
 	CreateRunner(addr string, configurators ...host.Configurator) iris.Runner
 	Iris() *iris.Application
 	Logger() *golog.Logger

@@ -243,6 +243,15 @@ func (app *Application) CreateRunner(addr string, configurators ...host.Configur
 	return iris.Addr(addr, configurators...)
 }
 
+//CreateAutoTLSRunner .
+func (app *Application) CreateAutoTLSRunner(addr string, domain string, email string, configurators ...host.Configurator) iris.Runner {
+	return func(irisApp *iris.Application) error {
+		return irisApp.NewHost(&http.Server{Addr: addr}).
+			Configure(configurators...).
+			ListenAndServeAutoTLS(domain, email, "letscache")
+	}
+}
+
 func (app *Application) shutdown(timeout int64) {
 	iris.RegisterOnInterrupt(func() {
 		//读取配置的关闭最长时间
