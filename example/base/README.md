@@ -6,6 +6,7 @@
 - domain - 领域模型
     - aggregate - 聚合
     - entity - 实体
+    - event - 领域事件
     - dto - 传输对象
     - po - 持久化对象
     - *.go - 领域服务
