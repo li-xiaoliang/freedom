@@ -43,6 +43,7 @@ func eventLoop(app freedom.Application) {
 			shopEvent, ok := domainEvent.(*event.ShopGoods)
 			if ok {
 				app.CallService(func(goodsService *domain.Goods) {
+					//收到购买事件，自动增加库存。
 					goodsService.AddStock(shopEvent.GoodsID, shopEvent.GoodsNum)
 				})
 			}
