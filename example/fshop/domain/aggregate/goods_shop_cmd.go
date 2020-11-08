@@ -40,7 +40,7 @@ func (cmd *GoodsShopCmd) Shop() error {
 	cmd.AddOrderDetal(&po.OrderDetail{OrderNo: cmd.OrderNo, GoodsID: cmd.goodsEntity.ID, GoodsName: cmd.goodsEntity.Name, Num: cmd.goodsNum, Created: time.Now(), Updated: time.Now()})
 
 	//增加领域事件
-	cmd.Order.AddEvent(&event.ShopGoods{
+	cmd.Order.AddPubEvent(&event.ShopGoods{
 		UserID:    cmd.UserID,
 		OrderNO:   cmd.OrderNo,
 		GoodsID:   cmd.goodsEntity.ID,
@@ -59,7 +59,7 @@ func (cmd *GoodsShopCmd) Shop() error {
 	})
 
 	if e != nil {
-		cmd.RemoveAllEvent()
+		cmd.RemoveAllPubEvent()
 	}
 	return e
 }

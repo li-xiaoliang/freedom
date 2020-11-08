@@ -36,15 +36,20 @@ func fixedTime(app freedom.Application) {
 
 // eventLoop .
 func eventLoop(app freedom.Application) {
+	eventManager := repository.GetEventManager()
 	go func() {
-		for domainEvent := range repository.EventChan {
+		for domainEvent := range eventManager.GetPublisherChan() {
 			time.Sleep(1 * time.Second)
 			freedom.Logger().Info("领域事件消费", domainEvent)
 			shopEvent, ok := domainEvent.(*event.ShopGoods)
 			if ok {
+				if err := eventManager.NewSubEvent(shopEvent); err != nil {
+					freedom.Logger().Error("领域事件消费错误", err)
+					continue
+				}
 				app.CallService(func(goodsService *domain.Goods) {
 					//收到购买事件，自动增加库存。
-					goodsService.AddStock(shopEvent.GoodsID, shopEvent.GoodsNum)
+					goodsService.AddStockEvent(shopEvent.GoodsID, shopEvent.GoodsNum, shopEvent)
 				})
 			}
 		}

@@ -27,6 +27,7 @@ var _ dependency.UserRepo = (*User)(nil)
 // User .
 type User struct {
 	freedom.Repository
+	EventManager *EventManager
 }
 
 // Get .
@@ -61,8 +62,8 @@ func (repo *User) Save(entity *entity.User) error {
 	if e != nil {
 		return e
 	}
-	events := entity.GetEvent()
-	return saveEvents(repo, events)
+	events := entity.GetPubEvent()
+	return repo.EventManager.newPubEvents(repo, events)
 }
 
 // New .

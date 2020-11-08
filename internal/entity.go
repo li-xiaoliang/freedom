@@ -24,10 +24,14 @@ type Entity interface {
 	Identity() string
 	GetWorker() Worker
 	Marshal() []byte
-	AddEvent(DomainEvent)
-	GetEvent() []DomainEvent
-	RemoveEvent(string)
-	RemoveAllEvent()
+	AddPubEvent(DomainEvent)
+	GetPubEvent() []DomainEvent
+	RemovePubEvent(string)
+	RemoveAllPubEvent()
+	AddSubEvent(DomainEvent)
+	GetSubEvent() []DomainEvent
+	RemoveSubEvent(string)
+	RemoveAllSubEvent()
 }
 
 func injectBaseEntity(run Worker, entityObject interface{}) {
@@ -43,7 +47,8 @@ func injectBaseEntity(run Worker, entityObject interface{}) {
 	e := new(entity)
 	e.worker = run
 	e.entityObject = entityObject
-	e.events = map[string][]DomainEvent{}
+	e.pubEvents = map[string][]DomainEvent{}
+	e.subEvents = map[string][]DomainEvent{}
 	eValue := reflect.ValueOf(e)
 	if entityField.Kind() != reflect.Interface || !eValue.Type().Implements(entityField.Type()) {
 		globalApp.Logger().Fatalf("[Freedom] InjectBaseEntity: This is not a legitimate entity, %v", entityObjectValue.Type())
@@ -58,7 +63,8 @@ type entity struct {
 	identity     string
 	producer     string
 	entityObject interface{}
-	events       map[string][]DomainEvent
+	pubEvents    map[string][]DomainEvent
+	subEvents    map[string][]DomainEvent
 }
 
 /*
@@ -96,9 +102,9 @@ func (e *entity) Marshal() []byte {
 	return data
 }
 
-// AddEvent.
-func (e *entity) AddEvent(event DomainEvent) {
-	e.events[event.Topic()] = append(e.events[event.Topic()], event)
+// AddPubEvent.
+func (e *entity) AddPubEvent(event DomainEvent) {
+	e.pubEvents[event.Topic()] = append(e.pubEvents[event.Topic()], event)
 	e.worker.addEvent(event)
 	m := map[string]interface{}{}
 	for key, item := range e.GetWorker().Bus().Header {
@@ -110,24 +116,55 @@ func (e *entity) AddEvent(event DomainEvent) {
 	event.SetPrototypes(m)
 }
 
-// GetEvent .
-func (e *entity) GetEvent() (result []DomainEvent) {
-	for _, event := range e.events {
+// GetPubEvent .
+func (e *entity) GetPubEvent() (result []DomainEvent) {
+	for _, event := range e.pubEvents {
 		result = append(result, event...)
 	}
 	return
 }
 
-// RemoveEvent .
-func (e *entity) RemoveEvent(eventName string) {
-	delete(e.events, eventName)
+// RemovePubEvent .
+func (e *entity) RemovePubEvent(eventName string) {
+	delete(e.pubEvents, eventName)
 	e.worker.removeEvent(eventName)
 }
 
-// RemoveAllEvent .
-func (e *entity) RemoveAllEvent() {
-	for name := range e.events {
+// RemoveAllPubEvent .
+func (e *entity) RemoveAllPubEvent() {
+	for name := range e.pubEvents {
 		e.worker.removeEvent(name)
 	}
-	e.events = map[string][]DomainEvent{}
+	e.pubEvents = map[string][]DomainEvent{}
+}
+
+// AddSubEvent.
+func (e *entity) AddSubEvent(event DomainEvent) {
+	e.subEvents[event.Topic()] = append(e.subEvents[event.Topic()], event)
+	m := map[string]interface{}{}
+	for key, item := range e.GetWorker().Bus().Header {
+		if len(item) <= 0 {
+			continue
+		}
+		m[key] = item[0]
+	}
+	event.SetPrototypes(m)
+}
+
+// GetSubEvent .
+func (e *entity) GetSubEvent() (result []DomainEvent) {
+	for _, event := range e.subEvents {
+		result = append(result, event...)
+	}
+	return
+}
+
+// RemoveSubEvent .
+func (e *entity) RemoveSubEvent(eventName string) {
+	delete(e.subEvents, eventName)
+}
+
+// RemoveAllSubEvent .
+func (e *entity) RemoveAllSubEvent() {
+	e.subEvents = map[string][]DomainEvent{}
 }

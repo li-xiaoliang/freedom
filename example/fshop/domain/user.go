@@ -47,7 +47,7 @@ func (s *User) ChangePassword(userID int, newPassword, oldPassword string) (e er
 		return s.UserRepo.Save(userEntity)
 	})
 	if e != nil {
-		userEntity.RemoveAllEvent()
+		userEntity.RemoveAllPubEvent()
 	}
 	s.Worker.Logger().Infof("ChangePassword newPassword:%s oldPassword:%s err:%v", newPassword, oldPassword, e)
 	return

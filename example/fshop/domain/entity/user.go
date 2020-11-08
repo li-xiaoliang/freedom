@@ -27,7 +27,8 @@ func (u *User) ChangePassword(newPassword, oldPassword string) error {
 	}
 	u.SetPassword(newPassword)
 
-	u.AddEvent(&event.ChangePassword{
+	// AddEvent 会加入Worker.events 请求结束会发布或手动发布
+	u.AddPubEvent(&event.ChangePassword{
 		UserID:      u.User.ID,
 		NewPassword: u.Password,
 		OldPassword: oldPassword,

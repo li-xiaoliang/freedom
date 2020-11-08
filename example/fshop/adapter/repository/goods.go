@@ -28,7 +28,8 @@ var _ dependency.GoodsRepo = (*Goods)(nil)
 // Goods .
 type Goods struct {
 	freedom.Repository
-	Cache store.EntityCache //实体缓存组件
+	Cache        store.EntityCache //实体缓存组件
+	EventManager *EventManager
 }
 
 // BeginRequest .
@@ -59,9 +60,19 @@ func (repo *Goods) Get(ID int) (goodsEntity *entity.Goods, e error) {
 // Save 持久化实体.
 func (repo *Goods) Save(entity *entity.Goods) error {
 	_, e := saveGoods(repo, &entity.Goods)
+	if e != nil {
+		return e
+	}
 	//清空缓存
 	repo.Cache.Delete(entity)
-	return e
+
+	for _, subEvent := range entity.GetSubEvent() {
+		err := repo.EventManager.updateSubEvent(repo, subEvent)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // Finds .

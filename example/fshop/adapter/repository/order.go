@@ -27,7 +27,8 @@ var _ dependency.OrderRepo = (*Order)(nil)
 // Order .
 type Order struct {
 	freedom.Repository
-	Cache store.EntityCache //实体缓存组件
+	Cache        store.EntityCache //实体缓存组件
+	EventManager *EventManager
 }
 
 // BeginRequest .
@@ -67,7 +68,7 @@ func (repo *Order) Save(orderEntity *entity.Order) (e error) {
 				return
 			}
 		}
-		return saveEvents(repo, orderEntity.GetEvent())
+		return repo.EventManager.newPubEvents(repo, orderEntity.GetPubEvent())
 	}
 
 	_, e = saveOrder(repo, &orderEntity.Order)

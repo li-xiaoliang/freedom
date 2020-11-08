@@ -121,12 +121,12 @@ func ormErrorLog(repo GORMRepository, model, method string, e error, expression 
 	repo.GetWorker().Logger().Errorf("Orm error, model: %s, method: %s, expression :%v, reason for error:%v", model, method, expression, e)
 }
 
-// findAdmin .
-func findAdmin(repo GORMRepository, result interface{}, builders ...Builder) (e error) {
+// findDomainEventPublish .
+func findDomainEventPublish(repo GORMRepository, result interface{}, builders ...Builder) (e error) {
 	now := time.Now()
 	defer func() {
-		freedom.Prometheus().OrmWithLabelValues("Admin", "findAdmin", e, now)
-		ormErrorLog(repo, "Admin", "findAdmin", e, result)
+		freedom.Prometheus().OrmWithLabelValues("DomainEventPublish", "findDomainEventPublish", e, now)
+		ormErrorLog(repo, "DomainEventPublish", "findDomainEventPublish", e, result)
 	}()
 	db := repo.db()
 	if len(builders) == 0 {
@@ -137,21 +137,21 @@ func findAdmin(repo GORMRepository, result interface{}, builders ...Builder) (e 
 	return
 }
 
-// findAdminListByPrimarys .
-func findAdminListByPrimarys(repo GORMRepository, results interface{}, primarys ...interface{}) (e error) {
+// findDomainEventPublishListByPrimarys .
+func findDomainEventPublishListByPrimarys(repo GORMRepository, results interface{}, primarys ...interface{}) (e error) {
 	now := time.Now()
 	e = repo.db().Find(results, primarys).Error
-	freedom.Prometheus().OrmWithLabelValues("Admin", "findAdminListByPrimarys", e, now)
-	ormErrorLog(repo, "Admin", "findAdminsByPrimarys", e, primarys)
+	freedom.Prometheus().OrmWithLabelValues("DomainEventPublish", "findDomainEventPublishListByPrimarys", e, now)
+	ormErrorLog(repo, "DomainEventPublish", "findDomainEventPublishsByPrimarys", e, primarys)
 	return
 }
 
-// findAdminByWhere .
-func findAdminByWhere(repo GORMRepository, query string, args []interface{}, result interface{}, builders ...Builder) (e error) {
+// findDomainEventPublishByWhere .
+func findDomainEventPublishByWhere(repo GORMRepository, query string, args []interface{}, result interface{}, builders ...Builder) (e error) {
 	now := time.Now()
 	defer func() {
-		freedom.Prometheus().OrmWithLabelValues("Admin", "findAdminByWhere", e, now)
-		ormErrorLog(repo, "Admin", "findAdminByWhere", e, query, args)
+		freedom.Prometheus().OrmWithLabelValues("DomainEventPublish", "findDomainEventPublishByWhere", e, now)
+		ormErrorLog(repo, "DomainEventPublish", "findDomainEventPublishByWhere", e, query, args)
 	}()
 	db := repo.db()
 	if query != "" {
@@ -166,12 +166,12 @@ func findAdminByWhere(repo GORMRepository, query string, args []interface{}, res
 	return
 }
 
-// findAdminByMap .
-func findAdminByMap(repo GORMRepository, query map[string]interface{}, result interface{}, builders ...Builder) (e error) {
+// findDomainEventPublishByMap .
+func findDomainEventPublishByMap(repo GORMRepository, query map[string]interface{}, result interface{}, builders ...Builder) (e error) {
 	now := time.Now()
 	defer func() {
-		freedom.Prometheus().OrmWithLabelValues("Admin", "findAdminByMap", e, now)
-		ormErrorLog(repo, "Admin", "findAdminByMap", e, query)
+		freedom.Prometheus().OrmWithLabelValues("DomainEventPublish", "findDomainEventPublishByMap", e, now)
+		ormErrorLog(repo, "DomainEventPublish", "findDomainEventPublishByMap", e, query)
 	}()
 
 	db := repo.db().Where(query)
@@ -184,12 +184,12 @@ func findAdminByMap(repo GORMRepository, query map[string]interface{}, result in
 	return
 }
 
-// findAdminList .
-func findAdminList(repo GORMRepository, query po.Admin, results interface{}, builders ...Builder) (e error) {
+// findDomainEventPublishList .
+func findDomainEventPublishList(repo GORMRepository, query po.DomainEventPublish, results interface{}, builders ...Builder) (e error) {
 	now := time.Now()
 	defer func() {
-		freedom.Prometheus().OrmWithLabelValues("Admin", "findAdminList", e, now)
-		ormErrorLog(repo, "Admin", "findAdmins", e, query)
+		freedom.Prometheus().OrmWithLabelValues("DomainEventPublish", "findDomainEventPublishList", e, now)
+		ormErrorLog(repo, "DomainEventPublish", "findDomainEventPublishs", e, query)
 	}()
 	db := repo.db().Where(query)
 
@@ -201,12 +201,12 @@ func findAdminList(repo GORMRepository, query po.Admin, results interface{}, bui
 	return
 }
 
-// findAdminListByWhere .
-func findAdminListByWhere(repo GORMRepository, query string, args []interface{}, results interface{}, builders ...Builder) (e error) {
+// findDomainEventPublishListByWhere .
+func findDomainEventPublishListByWhere(repo GORMRepository, query string, args []interface{}, results interface{}, builders ...Builder) (e error) {
 	now := time.Now()
 	defer func() {
-		freedom.Prometheus().OrmWithLabelValues("Admin", "findAdminListByWhere", e, now)
-		ormErrorLog(repo, "Admin", "findAdminsByWhere", e, query, args)
+		freedom.Prometheus().OrmWithLabelValues("DomainEventPublish", "findDomainEventPublishListByWhere", e, now)
+		ormErrorLog(repo, "DomainEventPublish", "findDomainEventPublishsByWhere", e, query, args)
 	}()
 	db := repo.db()
 	if query != "" {
@@ -221,12 +221,12 @@ func findAdminListByWhere(repo GORMRepository, query string, args []interface{},
 	return
 }
 
-// findAdminListByMap .
-func findAdminListByMap(repo GORMRepository, query map[string]interface{}, results interface{}, builders ...Builder) (e error) {
+// findDomainEventPublishListByMap .
+func findDomainEventPublishListByMap(repo GORMRepository, query map[string]interface{}, results interface{}, builders ...Builder) (e error) {
 	now := time.Now()
 	defer func() {
-		freedom.Prometheus().OrmWithLabelValues("Admin", "findAdminListByMap", e, now)
-		ormErrorLog(repo, "Admin", "findAdminsByMap", e, query)
+		freedom.Prometheus().OrmWithLabelValues("DomainEventPublish", "findDomainEventPublishListByMap", e, now)
+		ormErrorLog(repo, "DomainEventPublish", "findDomainEventPublishsByMap", e, query)
 	}()
 
 	db := repo.db().Where(query)
@@ -239,34 +239,34 @@ func findAdminListByMap(repo GORMRepository, query map[string]interface{}, resul
 	return
 }
 
-// createAdmin .
-func createAdmin(repo GORMRepository, object *po.Admin) (rowsAffected int64, e error) {
+// createDomainEventPublish .
+func createDomainEventPublish(repo GORMRepository, object *po.DomainEventPublish) (rowsAffected int64, e error) {
 	now := time.Now()
 	db := repo.db().Create(object)
 	rowsAffected = db.RowsAffected
 	e = db.Error
-	freedom.Prometheus().OrmWithLabelValues("Admin", "createAdmin", e, now)
-	ormErrorLog(repo, "Admin", "createAdmin", e, *object)
+	freedom.Prometheus().OrmWithLabelValues("DomainEventPublish", "createDomainEventPublish", e, now)
+	ormErrorLog(repo, "DomainEventPublish", "createDomainEventPublish", e, *object)
 	return
 }
 
-// saveAdmin .
-func saveAdmin(repo GORMRepository, object *po.Admin) (affected int64, e error) {
+// saveDomainEventPublish .
+func saveDomainEventPublish(repo GORMRepository, object *po.DomainEventPublish) (affected int64, e error) {
 	now := time.Now()
 	db := repo.db().Model(object).Updates(object.TakeChanges())
 	e = db.Error
 	affected = db.RowsAffected
-	freedom.Prometheus().OrmWithLabelValues("Admin", "saveAdmin", e, now)
-	ormErrorLog(repo, "Admin", "saveAdmin", e, *object)
+	freedom.Prometheus().OrmWithLabelValues("DomainEventPublish", "saveDomainEventPublish", e, now)
+	ormErrorLog(repo, "DomainEventPublish", "saveDomainEventPublish", e, *object)
 	return
 }
 
-// findCart .
-func findCart(repo GORMRepository, result interface{}, builders ...Builder) (e error) {
+// findDomainEventSubscribe .
+func findDomainEventSubscribe(repo GORMRepository, result interface{}, builders ...Builder) (e error) {
 	now := time.Now()
 	defer func() {
-		freedom.Prometheus().OrmWithLabelValues("Cart", "findCart", e, now)
-		ormErrorLog(repo, "Cart", "findCart", e, result)
+		freedom.Prometheus().OrmWithLabelValues("DomainEventSubscribe", "findDomainEventSubscribe", e, now)
+		ormErrorLog(repo, "DomainEventSubscribe", "findDomainEventSubscribe", e, result)
 	}()
 	db := repo.db()
 	if len(builders) == 0 {
@@ -277,21 +277,21 @@ func findCart(repo GORMRepository, result interface{}, builders ...Builder) (e e
 	return
 }
 
-// findCartListByPrimarys .
-func findCartListByPrimarys(repo GORMRepository, results interface{}, primarys ...interface{}) (e error) {
+// findDomainEventSubscribeListByPrimarys .
+func findDomainEventSubscribeListByPrimarys(repo GORMRepository, results interface{}, primarys ...interface{}) (e error) {
 	now := time.Now()
 	e = repo.db().Find(results, primarys).Error
-	freedom.Prometheus().OrmWithLabelValues("Cart", "findCartListByPrimarys", e, now)
-	ormErrorLog(repo, "Cart", "findCartsByPrimarys", e, primarys)
+	freedom.Prometheus().OrmWithLabelValues("DomainEventSubscribe", "findDomainEventSubscribeListByPrimarys", e, now)
+	ormErrorLog(repo, "DomainEventSubscribe", "findDomainEventSubscribesByPrimarys", e, primarys)
 	return
 }
 
-// findCartByWhere .
-func findCartByWhere(repo GORMRepository, query string, args []interface{}, result interface{}, builders ...Builder) (e error) {
+// findDomainEventSubscribeByWhere .
+func findDomainEventSubscribeByWhere(repo GORMRepository, query string, args []interface{}, result interface{}, builders ...Builder) (e error) {
 	now := time.Now()
 	defer func() {
-		freedom.Prometheus().OrmWithLabelValues("Cart", "findCartByWhere", e, now)
-		ormErrorLog(repo, "Cart", "findCartByWhere", e, query, args)
+		freedom.Prometheus().OrmWithLabelValues("DomainEventSubscribe", "findDomainEventSubscribeByWhere", e, now)
+		ormErrorLog(repo, "DomainEventSubscribe", "findDomainEventSubscribeByWhere", e, query, args)
 	}()
 	db := repo.db()
 	if query != "" {
@@ -306,12 +306,12 @@ func findCartByWhere(repo GORMRepository, query string, args []interface{}, resu
 	return
 }
 
-// findCartByMap .
-func findCartByMap(repo GORMRepository, query map[string]interface{}, result interface{}, builders ...Builder) (e error) {
+// findDomainEventSubscribeByMap .
+func findDomainEventSubscribeByMap(repo GORMRepository, query map[string]interface{}, result interface{}, builders ...Builder) (e error) {
 	now := time.Now()
 	defer func() {
-		freedom.Prometheus().OrmWithLabelValues("Cart", "findCartByMap", e, now)
-		ormErrorLog(repo, "Cart", "findCartByMap", e, query)
+		freedom.Prometheus().OrmWithLabelValues("DomainEventSubscribe", "findDomainEventSubscribeByMap", e, now)
+		ormErrorLog(repo, "DomainEventSubscribe", "findDomainEventSubscribeByMap", e, query)
 	}()
 
 	db := repo.db().Where(query)
@@ -324,12 +324,12 @@ func findCartByMap(repo GORMRepository, query map[string]interface{}, result int
 	return
 }
 
-// findCartList .
-func findCartList(repo GORMRepository, query po.Cart, results interface{}, builders ...Builder) (e error) {
+// findDomainEventSubscribeList .
+func findDomainEventSubscribeList(repo GORMRepository, query po.DomainEventSubscribe, results interface{}, builders ...Builder) (e error) {
 	now := time.Now()
 	defer func() {
-		freedom.Prometheus().OrmWithLabelValues("Cart", "findCartList", e, now)
-		ormErrorLog(repo, "Cart", "findCarts", e, query)
+		freedom.Prometheus().OrmWithLabelValues("DomainEventSubscribe", "findDomainEventSubscribeList", e, now)
+		ormErrorLog(repo, "DomainEventSubscribe", "findDomainEventSubscribes", e, query)
 	}()
 	db := repo.db().Where(query)
 
@@ -341,12 +341,12 @@ func findCartList(repo GORMRepository, query po.Cart, results interface{}, build
 	return
 }
 
-// findCartListByWhere .
-func findCartListByWhere(repo GORMRepository, query string, args []interface{}, results interface{}, builders ...Builder) (e error) {
+// findDomainEventSubscribeListByWhere .
+func findDomainEventSubscribeListByWhere(repo GORMRepository, query string, args []interface{}, results interface{}, builders ...Builder) (e error) {
 	now := time.Now()
 	defer func() {
-		freedom.Prometheus().OrmWithLabelValues("Cart", "findCartListByWhere", e, now)
-		ormErrorLog(repo, "Cart", "findCartsByWhere", e, query, args)
+		freedom.Prometheus().OrmWithLabelValues("DomainEventSubscribe", "findDomainEventSubscribeListByWhere", e, now)
+		ormErrorLog(repo, "DomainEventSubscribe", "findDomainEventSubscribesByWhere", e, query, args)
 	}()
 	db := repo.db()
 	if query != "" {
@@ -361,12 +361,12 @@ func findCartListByWhere(repo GORMRepository, query string, args []interface{}, 
 	return
 }
 
-// findCartListByMap .
-func findCartListByMap(repo GORMRepository, query map[string]interface{}, results interface{}, builders ...Builder) (e error) {
+// findDomainEventSubscribeListByMap .
+func findDomainEventSubscribeListByMap(repo GORMRepository, query map[string]interface{}, results interface{}, builders ...Builder) (e error) {
 	now := time.Now()
 	defer func() {
-		freedom.Prometheus().OrmWithLabelValues("Cart", "findCartListByMap", e, now)
-		ormErrorLog(repo, "Cart", "findCartsByMap", e, query)
+		freedom.Prometheus().OrmWithLabelValues("DomainEventSubscribe", "findDomainEventSubscribeListByMap", e, now)
+		ormErrorLog(repo, "DomainEventSubscribe", "findDomainEventSubscribesByMap", e, query)
 	}()
 
 	db := repo.db().Where(query)
@@ -379,165 +379,25 @@ func findCartListByMap(repo GORMRepository, query map[string]interface{}, result
 	return
 }
 
-// createCart .
-func createCart(repo GORMRepository, object *po.Cart) (rowsAffected int64, e error) {
+// createDomainEventSubscribe .
+func createDomainEventSubscribe(repo GORMRepository, object *po.DomainEventSubscribe) (rowsAffected int64, e error) {
 	now := time.Now()
 	db := repo.db().Create(object)
 	rowsAffected = db.RowsAffected
 	e = db.Error
-	freedom.Prometheus().OrmWithLabelValues("Cart", "createCart", e, now)
-	ormErrorLog(repo, "Cart", "createCart", e, *object)
+	freedom.Prometheus().OrmWithLabelValues("DomainEventSubscribe", "createDomainEventSubscribe", e, now)
+	ormErrorLog(repo, "DomainEventSubscribe", "createDomainEventSubscribe", e, *object)
 	return
 }
 
-// saveCart .
-func saveCart(repo GORMRepository, object *po.Cart) (affected int64, e error) {
+// saveDomainEventSubscribe .
+func saveDomainEventSubscribe(repo GORMRepository, object *po.DomainEventSubscribe) (affected int64, e error) {
 	now := time.Now()
 	db := repo.db().Model(object).Updates(object.TakeChanges())
 	e = db.Error
 	affected = db.RowsAffected
-	freedom.Prometheus().OrmWithLabelValues("Cart", "saveCart", e, now)
-	ormErrorLog(repo, "Cart", "saveCart", e, *object)
-	return
-}
-
-// findDelivery .
-func findDelivery(repo GORMRepository, result interface{}, builders ...Builder) (e error) {
-	now := time.Now()
-	defer func() {
-		freedom.Prometheus().OrmWithLabelValues("Delivery", "findDelivery", e, now)
-		ormErrorLog(repo, "Delivery", "findDelivery", e, result)
-	}()
-	db := repo.db()
-	if len(builders) == 0 {
-		e = db.Where(result).Last(result).Error
-		return
-	}
-	e = builders[0].Execute(db.Limit(1), result)
-	return
-}
-
-// findDeliveryListByPrimarys .
-func findDeliveryListByPrimarys(repo GORMRepository, results interface{}, primarys ...interface{}) (e error) {
-	now := time.Now()
-	e = repo.db().Find(results, primarys).Error
-	freedom.Prometheus().OrmWithLabelValues("Delivery", "findDeliveryListByPrimarys", e, now)
-	ormErrorLog(repo, "Delivery", "findDeliverysByPrimarys", e, primarys)
-	return
-}
-
-// findDeliveryByWhere .
-func findDeliveryByWhere(repo GORMRepository, query string, args []interface{}, result interface{}, builders ...Builder) (e error) {
-	now := time.Now()
-	defer func() {
-		freedom.Prometheus().OrmWithLabelValues("Delivery", "findDeliveryByWhere", e, now)
-		ormErrorLog(repo, "Delivery", "findDeliveryByWhere", e, query, args)
-	}()
-	db := repo.db()
-	if query != "" {
-		db = db.Where(query, args...)
-	}
-	if len(builders) == 0 {
-		e = db.Last(result).Error
-		return
-	}
-
-	e = builders[0].Execute(db.Limit(1), result)
-	return
-}
-
-// findDeliveryByMap .
-func findDeliveryByMap(repo GORMRepository, query map[string]interface{}, result interface{}, builders ...Builder) (e error) {
-	now := time.Now()
-	defer func() {
-		freedom.Prometheus().OrmWithLabelValues("Delivery", "findDeliveryByMap", e, now)
-		ormErrorLog(repo, "Delivery", "findDeliveryByMap", e, query)
-	}()
-
-	db := repo.db().Where(query)
-	if len(builders) == 0 {
-		e = db.Last(result).Error
-		return
-	}
-
-	e = builders[0].Execute(db.Limit(1), result)
-	return
-}
-
-// findDeliveryList .
-func findDeliveryList(repo GORMRepository, query po.Delivery, results interface{}, builders ...Builder) (e error) {
-	now := time.Now()
-	defer func() {
-		freedom.Prometheus().OrmWithLabelValues("Delivery", "findDeliveryList", e, now)
-		ormErrorLog(repo, "Delivery", "findDeliverys", e, query)
-	}()
-	db := repo.db().Where(query)
-
-	if len(builders) == 0 {
-		e = db.Find(results).Error
-		return
-	}
-	e = builders[0].Execute(db, results)
-	return
-}
-
-// findDeliveryListByWhere .
-func findDeliveryListByWhere(repo GORMRepository, query string, args []interface{}, results interface{}, builders ...Builder) (e error) {
-	now := time.Now()
-	defer func() {
-		freedom.Prometheus().OrmWithLabelValues("Delivery", "findDeliveryListByWhere", e, now)
-		ormErrorLog(repo, "Delivery", "findDeliverysByWhere", e, query, args)
-	}()
-	db := repo.db()
-	if query != "" {
-		db = db.Where(query, args...)
-	}
-
-	if len(builders) == 0 {
-		e = db.Find(results).Error
-		return
-	}
-	e = builders[0].Execute(db, results)
-	return
-}
-
-// findDeliveryListByMap .
-func findDeliveryListByMap(repo GORMRepository, query map[string]interface{}, results interface{}, builders ...Builder) (e error) {
-	now := time.Now()
-	defer func() {
-		freedom.Prometheus().OrmWithLabelValues("Delivery", "findDeliveryListByMap", e, now)
-		ormErrorLog(repo, "Delivery", "findDeliverysByMap", e, query)
-	}()
-
-	db := repo.db().Where(query)
-
-	if len(builders) == 0 {
-		e = db.Find(results).Error
-		return
-	}
-	e = builders[0].Execute(db, results)
-	return
-}
-
-// createDelivery .
-func createDelivery(repo GORMRepository, object *po.Delivery) (rowsAffected int64, e error) {
-	now := time.Now()
-	db := repo.db().Create(object)
-	rowsAffected = db.RowsAffected
-	e = db.Error
-	freedom.Prometheus().OrmWithLabelValues("Delivery", "createDelivery", e, now)
-	ormErrorLog(repo, "Delivery", "createDelivery", e, *object)
-	return
-}
-
-// saveDelivery .
-func saveDelivery(repo GORMRepository, object *po.Delivery) (affected int64, e error) {
-	now := time.Now()
-	db := repo.db().Model(object).Updates(object.TakeChanges())
-	e = db.Error
-	affected = db.RowsAffected
-	freedom.Prometheus().OrmWithLabelValues("Delivery", "saveDelivery", e, now)
-	ormErrorLog(repo, "Delivery", "saveDelivery", e, *object)
+	freedom.Prometheus().OrmWithLabelValues("DomainEventSubscribe", "saveDomainEventSubscribe", e, now)
+	ormErrorLog(repo, "DomainEventSubscribe", "saveDomainEventSubscribe", e, *object)
 	return
 }
 

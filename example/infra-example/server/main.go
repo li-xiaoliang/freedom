@@ -6,11 +6,14 @@ import (
 
 	"github.com/8treenet/freedom"
 	_ "github.com/8treenet/freedom/example/infra-example/adapter/controllers"
+	"github.com/8treenet/freedom/example/infra-example/adapter/repository"
 	"github.com/8treenet/freedom/example/infra-example/server/conf"
+	"github.com/8treenet/freedom/infra/kafka"
 	"github.com/8treenet/freedom/infra/requests"
 	"github.com/8treenet/freedom/middleware"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"github.com/prometheus/client_golang/prometheus"
 )
 
 func main() {
@@ -20,6 +23,9 @@ func main() {
 	addrRunner := app.NewRunner(conf.Get().App.Other["listen_addr"].(string))
 	//app.InstallParty("/example")
 	liveness(app)
+
+	//安装领域事件发布者,请求结束会自动发布 或使用 Worker.PublishEvent() 手动发布
+	app.InstallEventPublisher(repository.GetEventManager().PublishHandle)
 	app.Run(addrRunner, *conf.Get().App)
 }
 
@@ -39,6 +45,10 @@ func installMiddleware(app freedom.Application) {
 
 	//总线中间件，处理上下游透传的Header
 	app.InstallBusMiddleware(middleware.NewBusFilter())
+
+	//安装事件监控中间件
+	eventMiddle := NewMsgPrometheus(conf.Get().App.Other["service_name"].(string))
+	kafka.InstallMiddleware(eventMiddle)
 }
 
 func installDatabase(app freedom.Application) {
@@ -60,4 +70,34 @@ func liveness(app freedom.Application) {
 	app.Iris().Get("/ping", func(ctx freedom.Context) {
 		ctx.WriteString("pong")
 	})
+}
+
+// NewMsgPrometheus 事件Kafka消息中间件
+func NewMsgPrometheus(serviceName string) kafka.ProducerHandler {
+	eventPublishReqs := prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name:        "event_publish_total",
+			Help:        "",
+			ConstLabels: prometheus.Labels{"service": serviceName},
+		},
+		[]string{"event", "error"},
+	)
+	freedom.Prometheus().RegisterCounter(eventPublishReqs)
+
+	return func(msg *kafka.Msg) {
+		//返回一个消息中间件
+		if msg.IsStopped() {
+			//如果停止
+			return
+		}
+		//下一步
+		msg.Next()
+
+		//如果发送错误
+		if msg.GetExecution() != nil {
+			eventPublishReqs.WithLabelValues(msg.Topic, msg.GetExecution().Error()).Inc()
+			return
+		}
+		eventPublishReqs.WithLabelValues(msg.Topic, "").Inc()
+	}
 }

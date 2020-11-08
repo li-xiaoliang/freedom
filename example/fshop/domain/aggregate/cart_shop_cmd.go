@@ -49,7 +49,7 @@ func (cmd *CartShopCmd) Shop() error {
 		cmd.AddOrderDetal(&po.OrderDetail{OrderNo: cmd.OrderNo, GoodsID: goodsEntity.ID, GoodsName: goodsEntity.Name, Num: cmd.allCartEntity[i].Num, Created: time.Now(), Updated: time.Now()})
 
 		//增加领域事件
-		cmd.Order.AddEvent(&event.ShopGoods{
+		cmd.Order.AddPubEvent(&event.ShopGoods{
 			UserID:    cmd.userEntity.ID,
 			OrderNO:   cmd.OrderNo,
 			GoodsID:   goodsEntity.ID,
@@ -78,7 +78,7 @@ func (cmd *CartShopCmd) Shop() error {
 	})
 
 	if e != nil {
-		cmd.RemoveAllEvent()
+		cmd.RemoveAllPubEvent()
 	}
 	return e
 }

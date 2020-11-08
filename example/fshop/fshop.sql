@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.7.18)
 # Database: fshop
-# Generation Time: 2020-11-08 06:32:53 +0000
+# Generation Time: 2020-11-08 09:59:14 +0000
 # ************************************************************
 
 
@@ -22,6 +22,8 @@
 
 # Dump of table admin
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `admin`;
 
 CREATE TABLE `admin` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -46,6 +48,8 @@ UNLOCK TABLES;
 # Dump of table cart
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `cart`;
+
 CREATE TABLE `cart` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL COMMENT '用户ID',
@@ -57,20 +61,12 @@ CREATE TABLE `cart` (
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='购物车';
 
-LOCK TABLES `cart` WRITE;
-/*!40000 ALTER TABLE `cart` DISABLE KEYS */;
-
-INSERT INTO `cart` (`id`, `user_id`, `goods_id`, `num`, `created`, `updated`)
-VALUES
-	(11,1,1,1,'2020-11-07 17:20:54','2020-11-07 17:20:54'),
-	(12,1,2,1,'2020-11-07 17:20:54','2020-11-07 17:20:54');
-
-/*!40000 ALTER TABLE `cart` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table delivery
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `delivery`;
 
 CREATE TABLE `delivery` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -98,8 +94,27 @@ VALUES
 UNLOCK TABLES;
 
 
+# Dump of table domain_event_subscribe
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `domain_event_subscribe`;
+
+CREATE TABLE `domain_event_subscribe` (
+  `id` int(11) unsigned NOT NULL,
+  `topic` varchar(64) NOT NULL DEFAULT '',
+  `progress` tinyint(4) NOT NULL COMMENT '0未处理，1处理',
+  `content` text NOT NULL COMMENT '内容',
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='领域事件消费表';
+
+
+
 # Dump of table domain_event_publish
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `domain_event_publish`;
 
 CREATE TABLE `domain_event_publish` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -109,14 +124,28 @@ CREATE TABLE `domain_event_publish` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='领域事件发布表';
 
 LOCK TABLES `domain_event_publish` WRITE;
 /*!40000 ALTER TABLE `domain_event_publish` DISABLE KEYS */;
 
 INSERT INTO `domain_event_publish` (`id`, `topic`, `send`, `content`, `created`, `updated`)
 VALUES
-	(7,'ChangePassword',1,'{\"userID\":3,\"newPassword\":\"123321\",\"oldPassword\":\"123321\"}','2020-11-08 14:28:37','2020-11-08 14:28:37');
+	(7,'ChangePassword',1,'{\"userID\":3,\"newPassword\":\"123321\",\"oldPassword\":\"123321\"}','2020-11-08 14:28:37','2020-11-08 14:58:14'),
+	(8,'ShopGoods',1,'{\"userID\":1,\"orderNO\":\"1604818624\",\"goodsID\":1,\"goodsNum\":2,\"goodsName\":\"iPhone\"}','2020-11-08 14:57:05','2020-11-08 14:57:04'),
+	(11,'ShopGoods',1,'{\"userID\":1,\"orderNO\":\"1604819337\",\"goodsID\":1,\"goodsNum\":1,\"goodsName\":\"iPhone\"}','2020-11-08 15:08:57','2020-11-08 15:08:57'),
+	(12,'ShopGoods',1,'{\"userID\":1,\"orderNO\":\"1604819337\",\"goodsID\":2,\"goodsNum\":1,\"goodsName\":\"iMac\"}','2020-11-08 15:08:57','2020-11-08 15:08:57'),
+	(13,'ShopGoods',1,'{\"userID\":1,\"orderNO\":\"1604819634\",\"goodsID\":1,\"goodsNum\":1,\"goodsName\":\"iPhone\"}','2020-11-08 15:13:54','2020-11-08 15:13:54'),
+	(14,'ShopGoods',1,'{\"userID\":1,\"orderNO\":\"1604819634\",\"goodsID\":2,\"goodsNum\":1,\"goodsName\":\"iMac\"}','2020-11-08 15:13:54','2020-11-08 15:13:54'),
+	(15,'ShopGoods',1,'{\"userID\":1,\"orderNO\":\"1604819670\",\"goodsID\":1,\"goodsNum\":2,\"goodsName\":\"iPhone\"}','2020-11-08 15:14:30','2020-11-08 15:14:30'),
+	(16,'ShopGoods',1,'{\"userID\":1,\"orderNO\":\"1604819680\",\"goodsID\":2,\"goodsNum\":2,\"goodsName\":\"iMac\"}','2020-11-08 15:14:41','2020-11-08 15:14:40'),
+	(17,'ShopGoods',1,'{\"userID\":1,\"orderNO\":\"1604819711\",\"goodsID\":3,\"goodsNum\":1,\"goodsName\":\"杜蕾斯\"}','2020-11-08 15:15:11','2020-11-08 15:15:11'),
+	(18,'ShopGoods',1,'{\"userID\":1,\"orderNO\":\"1604819711\",\"goodsID\":2,\"goodsNum\":1,\"goodsName\":\"iMac\"}','2020-11-08 15:15:11','2020-11-08 15:15:11'),
+	(19,'ChangePassword',1,'{\"userID\":3,\"newPassword\":\"123321\",\"oldPassword\":\"123321\"}','2020-11-08 16:40:47','2020-11-08 16:40:46'),
+	(20,'ChangePassword',1,'{\"userID\":3,\"newPassword\":\"123321\",\"oldPassword\":\"123321\"}','2020-11-08 16:42:50','2020-11-08 16:42:50'),
+	(21,'ShopGoods',1,'{\"userID\":1,\"orderNO\":\"1604825027\",\"goodsID\":2,\"goodsNum\":2,\"goodsName\":\"iMac\"}','2020-11-08 16:43:47','2020-11-08 16:43:47'),
+	(22,'ShopGoods',1,'{\"userID\":1,\"orderNO\":\"1604825052\",\"goodsID\":3,\"goodsNum\":1,\"goodsName\":\"杜蕾斯\"}','2020-11-08 16:44:12','2020-11-08 16:44:12'),
+	(23,'ShopGoods',1,'{\"userID\":1,\"orderNO\":\"1604825052\",\"goodsID\":2,\"goodsNum\":1,\"goodsName\":\"iMac\"}','2020-11-08 16:44:12','2020-11-08 16:44:12');
 
 /*!40000 ALTER TABLE `domain_event_publish` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -124,6 +153,8 @@ UNLOCK TABLES;
 
 # Dump of table goods
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `goods`;
 
 CREATE TABLE `goods` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -141,10 +172,10 @@ LOCK TABLES `goods` WRITE;
 
 INSERT INTO `goods` (`id`, `name`, `price`, `stock`, `tag`, `created`, `updated`)
 VALUES
-	(1,'iPhone',500,1903,'NEW','2020-01-16 18:06:31','2020-11-07 17:40:23'),
-	(2,'iMac',1000,399,'HOT','2020-01-16 18:06:44','2020-11-07 17:21:04'),
-	(3,'杜蕾斯',20,50,'NEW','2020-01-16 18:07:02','2020-03-04 11:17:21'),
-	(4,'轩辕剑',600,68,'NONE','2020-01-16 18:07:22','2020-11-08 14:29:24'),
+	(1,'iPhone',500,1887,'NEW','2020-01-16 18:06:31','2020-11-08 15:14:31'),
+	(2,'iMac',1000,395,'HOT','2020-01-16 18:06:44','2020-11-08 16:44:14'),
+	(3,'杜蕾斯',20,50,'NEW','2020-01-16 18:07:02','2020-11-08 16:44:13'),
+	(4,'轩辕剑',600,137,'NONE','2020-01-16 18:07:22','2020-11-08 16:44:16'),
 	(5,'布加迪威龙',3000,40,'HOT','2020-02-18 21:53:51','2020-11-07 17:21:06');
 
 /*!40000 ALTER TABLE `goods` ENABLE KEYS */;
@@ -153,6 +184,8 @@ UNLOCK TABLES;
 
 # Dump of table order
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `order`;
 
 CREATE TABLE `order` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -166,10 +199,37 @@ CREATE TABLE `order` (
   UNIQUE KEY `order_no` (`order_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单';
 
+LOCK TABLES `order` WRITE;
+/*!40000 ALTER TABLE `order` DISABLE KEYS */;
+
+INSERT INTO `order` (`id`, `order_no`, `user_id`, `total_price`, `status`, `created`, `updated`)
+VALUES
+	(96,'1604817907',1,1000,'NON_PAYMENT','2020-11-08 14:45:08','2020-11-08 14:45:08'),
+	(97,'1604817941',1,1000,'NON_PAYMENT','2020-11-08 14:45:41','2020-11-08 14:45:41'),
+	(98,'1604818215',1,1000,'NON_PAYMENT','2020-11-08 14:50:16','2020-11-08 14:50:16'),
+	(99,'1604818226',1,1000,'NON_PAYMENT','2020-11-08 14:50:26','2020-11-08 14:50:26'),
+	(100,'1604818379',1,1000,'NON_PAYMENT','2020-11-08 14:52:59','2020-11-08 14:52:59'),
+	(101,'1604818624',1,1000,'NON_PAYMENT','2020-11-08 14:57:05','2020-11-08 14:57:05'),
+	(102,'1604818717',1,3000,'NON_PAYMENT','2020-11-08 14:58:38','2020-11-08 14:58:38'),
+	(103,'1604818740',1,1500,'NON_PAYMENT','2020-11-08 14:59:00','2020-11-08 14:59:00'),
+	(104,'1604819325',1,0,'NON_PAYMENT','2020-11-08 15:08:45','2020-11-08 15:08:45'),
+	(105,'1604819337',1,1500,'NON_PAYMENT','2020-11-08 15:08:57','2020-11-08 15:08:57'),
+	(106,'1604819621',1,0,'NON_PAYMENT','2020-11-08 15:13:41','2020-11-08 15:13:41'),
+	(107,'1604819634',1,1500,'NON_PAYMENT','2020-11-08 15:13:54','2020-11-08 15:13:54'),
+	(108,'1604819670',1,1000,'NON_PAYMENT','2020-11-08 15:14:30','2020-11-08 15:14:30'),
+	(109,'1604819680',1,2000,'NON_PAYMENT','2020-11-08 15:14:41','2020-11-08 15:14:41'),
+	(110,'1604819711',1,1020,'NON_PAYMENT','2020-11-08 15:15:11','2020-11-08 15:15:11'),
+	(111,'1604825027',1,2000,'NON_PAYMENT','2020-11-08 16:43:47','2020-11-08 16:43:47'),
+	(112,'1604825052',1,1020,'NON_PAYMENT','2020-11-08 16:44:12','2020-11-08 16:44:12');
+
+/*!40000 ALTER TABLE `order` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table order_detail
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `order_detail`;
 
 CREATE TABLE `order_detail` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -182,10 +242,41 @@ CREATE TABLE `order_detail` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单商品';
 
+LOCK TABLES `order_detail` WRITE;
+/*!40000 ALTER TABLE `order_detail` DISABLE KEYS */;
+
+INSERT INTO `order_detail` (`id`, `order_no`, `goods_id`, `num`, `goods_name`, `created`, `updated`)
+VALUES
+	(122,'1604817907',1,2,'iPhone','2020-11-08 14:45:08','2020-11-08 14:45:08'),
+	(123,'1604817941',1,2,'iPhone','2020-11-08 14:45:41','2020-11-08 14:45:41'),
+	(124,'1604818215',1,2,'iPhone','2020-11-08 14:50:16','2020-11-08 14:50:16'),
+	(125,'1604818226',1,2,'iPhone','2020-11-08 14:50:26','2020-11-08 14:50:26'),
+	(126,'1604818379',1,2,'iPhone','2020-11-08 14:52:59','2020-11-08 14:52:59'),
+	(127,'1604818624',1,2,'iPhone','2020-11-08 14:57:05','2020-11-08 14:57:05'),
+	(128,'1604818717',1,2,'iPhone','2020-11-08 14:58:38','2020-11-08 14:58:38'),
+	(129,'1604818717',2,2,'iMac','2020-11-08 14:58:38','2020-11-08 14:58:38'),
+	(130,'1604818740',1,1,'iPhone','2020-11-08 14:59:00','2020-11-08 14:59:00'),
+	(131,'1604818740',2,1,'iMac','2020-11-08 14:59:00','2020-11-08 14:59:00'),
+	(132,'1604819337',1,1,'iPhone','2020-11-08 15:08:57','2020-11-08 15:08:57'),
+	(133,'1604819337',2,1,'iMac','2020-11-08 15:08:57','2020-11-08 15:08:57'),
+	(134,'1604819634',1,1,'iPhone','2020-11-08 15:13:54','2020-11-08 15:13:54'),
+	(135,'1604819634',2,1,'iMac','2020-11-08 15:13:54','2020-11-08 15:13:54'),
+	(136,'1604819670',1,2,'iPhone','2020-11-08 15:14:30','2020-11-08 15:14:30'),
+	(137,'1604819680',2,2,'iMac','2020-11-08 15:14:41','2020-11-08 15:14:41'),
+	(138,'1604819711',3,1,'杜蕾斯','2020-11-08 15:15:11','2020-11-08 15:15:11'),
+	(139,'1604819711',2,1,'iMac','2020-11-08 15:15:11','2020-11-08 15:15:11'),
+	(140,'1604825027',2,2,'iMac','2020-11-08 16:43:47','2020-11-08 16:43:47'),
+	(141,'1604825052',3,1,'杜蕾斯','2020-11-08 16:44:12','2020-11-08 16:44:12'),
+	(142,'1604825052',2,1,'iMac','2020-11-08 16:44:12','2020-11-08 16:44:12');
+
+/*!40000 ALTER TABLE `order_detail` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table user
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `user`;
 
 CREATE TABLE `user` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户id',
@@ -204,7 +295,7 @@ INSERT INTO `user` (`id`, `name`, `money`, `password`, `created`, `updated`)
 VALUES
 	(1,'zhangsan',63500,'123','2020-02-18 21:55:21','2020-11-07 17:21:44'),
 	(2,'lisi',100000,'321','2020-02-18 21:55:29','2020-04-12 14:28:32'),
-	(3,'freedom',10000,'123321','2020-11-08 14:32:29','2020-11-08 14:32:29');
+	(3,'freedom',10000,'123321','2020-11-08 14:32:29','2020-11-08 16:40:34');
 
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
