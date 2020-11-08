@@ -52,15 +52,16 @@ func (manager *EventManager) PublishHandle(event freedom.DomainEvent) {
 	eventID := event.Identity().(int)
 	go func() {
 		/*
+			Kafka 消息模式参考 example/infra-example
 			if err := pub.kafkaProducer.NewMsg(event.Topic(), event.Marshal()).SetHeader(event.GetPrototypes()).Publish(); err != nil {
 				freedom.Logger().Error(err)
 				return
 			}
 		*/
 		manager.publisherChan <- event
-		eventPo := &po.DomainEventPublish{ID: eventID}
-		eventPo.SetSend(1)
-		if err := manager.db().Model(eventPo).Updates(eventPo.TakeChanges()).Error; err != nil {
+		publish := &po.DomainEventPublish{ID: eventID}
+		publish.SetSend(1)
+		if err := manager.db().Model(publish).Updates(publish.TakeChanges()).Error; err != nil {
 			freedom.Logger().Info(err)
 		}
 	}()
