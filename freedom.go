@@ -179,8 +179,3 @@ func ToWorker(ctx Context) Worker {
 func DefaultConfiguration() Configuration {
 	return iris.DefaultConfiguration()
 }
-
-//HandleBusMiddleware middleware processing.
-func HandleBusMiddleware(worker Worker) {
-	internal.HandleBusMiddleware(worker)
-}

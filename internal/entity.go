@@ -11,10 +11,12 @@ var _ Entity = (*entity)(nil)
 
 // DomainEvent .
 type DomainEvent interface {
-	Name() string
-	SetPrototype(string, interface{})
-	GetPrototype(string) interface{}
+	Topic() string
+	SetPrototypes(map[string]interface{})
+	GetPrototypes() map[string]interface{}
 	Marshal() []byte
+	Identity() interface{}
+	SetIdentity(identity interface{})
 }
 
 //Entity is the entity's father interface.
@@ -96,8 +98,16 @@ func (e *entity) Marshal() []byte {
 
 // AddEvent.
 func (e *entity) AddEvent(event DomainEvent) {
-	e.events[event.Name()] = append(e.events[event.Name()], event)
+	e.events[event.Topic()] = append(e.events[event.Topic()], event)
 	e.worker.addEvent(event)
+	m := map[string]interface{}{}
+	for key, item := range e.GetWorker().Bus().Header {
+		if len(item) <= 0 {
+			continue
+		}
+		m[key] = item[0]
+	}
+	event.SetPrototypes(m)
 }
 
 // GetEvent .

@@ -38,7 +38,7 @@ func (repo *User) Get(ID int) (userEntity *entity.User, e error) {
 		return
 	}
 
-	//注入基础Entity 包含运行时和领域事件的producer
+	//注入基础Entity 包含运行时和领域事件集合.
 	repo.InjectBaseEntity(userEntity)
 	return
 }

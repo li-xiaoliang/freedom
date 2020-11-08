@@ -6,11 +6,11 @@ import (
 	"time"
 )
 
-// DomainEvent .
-type DomainEvent struct {
+// DomainEventPublish .
+type DomainEventPublish struct {
 	changes map[string]interface{}
 	ID      int       `gorm:"primary_key;column:id"`
-	Name    string    `gorm:"column:name"`
+	Topic   string    `gorm:"column:topic"`
 	Send    int       `gorm:"column:send"`    // 0未发送，1发送
 	Content string    `gorm:"column:content"` // 内容
 	Created time.Time `gorm:"column:created"`
@@ -18,12 +18,12 @@ type DomainEvent struct {
 }
 
 // TableName .
-func (obj *DomainEvent) TableName() string {
-	return "domain_event"
+func (obj *DomainEventPublish) TableName() string {
+	return "domain_event_publish"
 }
 
 // TakeChanges .
-func (obj *DomainEvent) TakeChanges() map[string]interface{} {
+func (obj *DomainEventPublish) TakeChanges() map[string]interface{} {
 	if obj.changes == nil {
 		return nil
 	}
@@ -36,45 +36,45 @@ func (obj *DomainEvent) TakeChanges() map[string]interface{} {
 }
 
 // updateChanges .
-func (obj *DomainEvent) setChanges(name string, value interface{}) {
+func (obj *DomainEventPublish) setChanges(name string, value interface{}) {
 	if obj.changes == nil {
 		obj.changes = make(map[string]interface{})
 	}
 	obj.changes[name] = value
 }
 
-// SetName .
-func (obj *DomainEvent) SetName(name string) {
-	obj.Name = name
-	obj.setChanges("name", name)
+// SetTopic .
+func (obj *DomainEventPublish) SetTopic(topic string) {
+	obj.Topic = topic
+	obj.setChanges("topic", topic)
 }
 
 // SetSend .
-func (obj *DomainEvent) SetSend(send int) {
+func (obj *DomainEventPublish) SetSend(send int) {
 	obj.Send = send
 	obj.setChanges("send", send)
 }
 
 // SetContent .
-func (obj *DomainEvent) SetContent(content string) {
+func (obj *DomainEventPublish) SetContent(content string) {
 	obj.Content = content
 	obj.setChanges("content", content)
 }
 
 // SetCreated .
-func (obj *DomainEvent) SetCreated(created time.Time) {
+func (obj *DomainEventPublish) SetCreated(created time.Time) {
 	obj.Created = created
 	obj.setChanges("created", created)
 }
 
 // SetUpdated .
-func (obj *DomainEvent) SetUpdated(updated time.Time) {
+func (obj *DomainEventPublish) SetUpdated(updated time.Time) {
 	obj.Updated = updated
 	obj.setChanges("updated", updated)
 }
 
 // AddSend .
-func (obj *DomainEvent) AddSend(send int) {
+func (obj *DomainEventPublish) AddSend(send int) {
 	obj.Send += send
 	obj.setChanges("send", gorm.Expr("send + ?", send))
 }

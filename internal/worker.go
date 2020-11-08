@@ -160,7 +160,7 @@ func (rt *worker) PublishEvent() {
 
 // addEvent.
 func (rt *worker) addEvent(event DomainEvent) {
-	rt.events[event.Name()] = append(rt.events[event.Name()], event)
+	rt.events[event.Topic()] = append(rt.events[event.Topic()], event)
 }
 
 // removeEvent .

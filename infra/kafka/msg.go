@@ -15,7 +15,7 @@ type Msg struct {
 	Topic        string
 	key          string
 	Content      []byte
-	header       map[string]string
+	header       map[string]interface{}
 	producerName string
 	stop         bool
 	nextIndex    int
@@ -29,7 +29,7 @@ func (msg *Msg) Publish() error {
 }
 
 // SetHeader .
-func (msg *Msg) SetHeader(head map[string]string) *Msg {
+func (msg *Msg) SetHeader(head map[string]interface{}) *Msg {
 	if msg.header == nil {
 		msg.header = head
 		return msg
@@ -92,7 +92,7 @@ func (msg *Msg) SetMessageKey(key string) *Msg {
 }
 
 // GetHeader .
-func (msg *Msg) GetHeader() map[string]string {
+func (msg *Msg) GetHeader() map[string]interface{} {
 	return msg.header
 }
 
@@ -108,7 +108,7 @@ func (msg *Msg) do() error {
 	}
 
 	for key, value := range msg.header {
-		saramaMsg.Headers = append(saramaMsg.Headers, sarama.RecordHeader{Key: []byte(key), Value: []byte(value)})
+		saramaMsg.Headers = append(saramaMsg.Headers, sarama.RecordHeader{Key: []byte(key), Value: []byte(fmt.Sprint(value))})
 	}
 
 	syncProducer := producer.getSaramaProducer(msg.producerName)

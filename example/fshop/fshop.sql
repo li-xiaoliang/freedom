@@ -98,27 +98,27 @@ VALUES
 UNLOCK TABLES;
 
 
-# Dump of table domain_event
+# Dump of table domain_event_publish
 # ------------------------------------------------------------
 
-CREATE TABLE `domain_event` (
+CREATE TABLE `domain_event_publish` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) DEFAULT NULL,
+  `topic` varchar(64) DEFAULT NULL,
   `send` tinyint(4) DEFAULT NULL COMMENT '0未发送，1发送',
   `content` text COMMENT '内容',
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4;
 
-LOCK TABLES `domain_event` WRITE;
-/*!40000 ALTER TABLE `domain_event` DISABLE KEYS */;
+LOCK TABLES `domain_event_publish` WRITE;
+/*!40000 ALTER TABLE `domain_event_publish` DISABLE KEYS */;
 
-INSERT INTO `domain_event` (`id`, `name`, `send`, `content`, `created`, `updated`)
+INSERT INTO `domain_event_publish` (`id`, `topic`, `send`, `content`, `created`, `updated`)
 VALUES
 	(7,'ChangePassword',1,'{\"userID\":3,\"newPassword\":\"123321\",\"oldPassword\":\"123321\"}','2020-11-08 14:28:37','2020-11-08 14:28:37');
 
-/*!40000 ALTER TABLE `domain_event` ENABLE KEYS */;
+/*!40000 ALTER TABLE `domain_event_publish` ENABLE KEYS */;
 UNLOCK TABLES;
 
 
@@ -204,7 +204,7 @@ INSERT INTO `user` (`id`, `name`, `money`, `password`, `created`, `updated`)
 VALUES
 	(1,'zhangsan',63500,'123','2020-02-18 21:55:21','2020-11-07 17:21:44'),
 	(2,'lisi',100000,'321','2020-02-18 21:55:29','2020-04-12 14:28:32'),
-	(38,'freedom',10000,'123321','2020-11-08 14:32:29','2020-11-08 14:32:29');
+	(3,'freedom',10000,'123321','2020-11-08 14:32:29','2020-11-08 14:32:29');
 
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;

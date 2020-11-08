@@ -49,7 +49,7 @@ func (repo *Goods) BeginRequest(worker freedom.Worker) {
 func (repo *Goods) Get(ID int) (goodsEntity *entity.Goods, e error) {
 	goodsEntity = &entity.Goods{}
 	goodsEntity.ID = ID
-	//注入基础Entity 包含运行时和领域事件的producer
+	//注入基础Entity 包含运行时和领域事件集合.
 	repo.InjectBaseEntity(goodsEntity)
 
 	//读取缓存
@@ -75,7 +75,7 @@ func (repo *Goods) Finds(IDs []int) (entitys []*entity.Goods, e error) {
 		return
 	}
 
-	//注入基础Entity 包含运行时和领域事件的producer
+	//注入基础Entity 包含运行时和领域事件集合.
 	repo.InjectBaseEntitys(entitys)
 	return
 }
@@ -92,7 +92,7 @@ func (repo *Goods) FindsByPage(page, pageSize int, tag string) (entitys []*entit
 		"pageSize":  pageSize,
 		"totalPage": pager.TotalPage(),
 	})
-	//注入基础Entity 包含运行时和领域事件的producer
+	//注入基础Entity 包含运行时和领域事件集合.
 	repo.InjectBaseEntitys(entitys)
 	return
 }

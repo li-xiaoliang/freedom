@@ -48,7 +48,7 @@ func (repo *Order) New() (orderEntity *entity.Order, e error) {
 	orderNo := fmt.Sprint(time.Now().Unix())
 	orderEntity = &entity.Order{Order: po.Order{OrderNo: orderNo, Status: "NON_PAYMENT", Created: time.Now(), Updated: time.Now()}}
 
-	//注入基础Entity 包含运行时和领域事件的producer
+	//注入基础Entity 包含运行时和领域事件集合.
 	repo.InjectBaseEntity(orderEntity)
 	return
 }
@@ -98,7 +98,7 @@ func (repo *Order) Find(orderNo string, userID int) (orderEntity *entity.Order, 
 		return
 	}
 
-	//注入基础Entity 包含运行时和领域事件的producer
+	//注入基础Entity 包含运行时和领域事件集合.
 	repo.InjectBaseEntity(orderEntity)
 	return
 }
@@ -120,7 +120,7 @@ func (repo *Order) Finds(userID int, page, pageSize int) (entitys []*entity.Orde
 	}
 
 	totalPage = pager.TotalPage()
-	//注入基础Entity 包含运行时和领域事件的producer
+	//注入基础Entity 包含运行时和领域事件集合.
 	repo.InjectBaseEntitys(entitys)
 	return
 }
@@ -128,7 +128,7 @@ func (repo *Order) Finds(userID int, page, pageSize int) (entitys []*entity.Orde
 // Get .
 func (repo *Order) Get(orderNo string) (orderEntity *entity.Order, e error) {
 	orderEntity = &entity.Order{Order: po.Order{OrderNo: orderNo}}
-	//注入基础Entity 包含运行时和领域事件的producer
+	//注入基础Entity 包含运行时和领域事件集合.
 	repo.InjectBaseEntity(orderEntity)
 
 	return orderEntity, repo.Cache.GetEntity(orderEntity)

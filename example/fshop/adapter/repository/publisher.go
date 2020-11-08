@@ -42,16 +42,16 @@ func (pub *Publisher) Booting(sb freedom.SingleBoot) {
 // EventHandle .
 func (pub *Publisher) EventHandle(event freedom.DomainEvent) {
 	freedom.Logger().Info("领域事件发布", event)
-	eventID := event.GetPrototype("id").(int)
+	eventID := event.Identity().(int)
 	go func() {
 		/*
-			if err := pub.kafkaProducer.NewMsg(event.Name(), event.Marshal()).Publish(); err != nil {
+			if err := pub.kafkaProducer.NewMsg(event.Topic(), event.Marshal()).SetHeader(event.GetPrototypes()).Publish(); err != nil {
 				freedom.Logger().Error(err)
 				return
 			}
 		*/
 		EventChan <- event
-		eventPo := &po.DomainEvent{ID: eventID}
+		eventPo := &po.DomainEventPublish{ID: eventID}
 		eventPo.SetSend(1)
 		if err := pub.db().Model(eventPo).Updates(eventPo.TakeChanges()).Error; err != nil {
 			freedom.Logger().Info(err)
@@ -65,18 +65,18 @@ func (pub *Publisher) db() *gorm.DB {
 
 func saveEvents(repo GORMRepository, events []freedom.DomainEvent) error {
 	for _, domainEvent := range events {
-		model := po.DomainEvent{
-			Name:    domainEvent.Name(),
+		model := po.DomainEventPublish{
+			Topic:   domainEvent.Topic(),
 			Content: string(domainEvent.Marshal()),
 			Created: time.Now(),
 			Updated: time.Now(),
 		}
 
-		_, err := createDomainEvent(repo, &model)
+		_, err := createDomainEventPublish(repo, &model)
 		if err != nil {
 			return err
 		}
-		domainEvent.SetPrototype("id", model.ID)
+		domainEvent.SetIdentity(model.ID)
 	}
 	return nil
 }
