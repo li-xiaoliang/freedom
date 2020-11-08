@@ -23,6 +23,7 @@ var consumerPtr *Consumer = new(Consumer)
 
 // Consumer .
 type Consumer struct {
+	freedom.Infra
 	topicPath       map[string]string
 	limiter         *Limiter
 	conf            kafkaConf

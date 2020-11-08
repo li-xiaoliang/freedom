@@ -22,18 +22,10 @@ type Msg struct {
 	sendErr      error
 }
 
-// SetWorker .
-func (msg *Msg) SetWorker(worker freedom.Worker) *Msg {
-	freedom.HandleBusMiddleware(worker)
-	msg.httpHeader = worker.Bus().Header
-	return msg
-}
-
 // Publish .
-func (msg *Msg) Publish() {
-	go func() {
-		msg.Next()
-	}()
+func (msg *Msg) Publish() error {
+	msg.Next()
+	return msg.sendErr
 }
 
 // SetHeader .

@@ -58,7 +58,11 @@ func (repo *User) FindByName(userName string) (userEntity *entity.User, e error)
 // Save .
 func (repo *User) Save(entity *entity.User) error {
 	_, e := saveUser(repo, &entity.User)
-	return e
+	if e != nil {
+		return e
+	}
+	events := entity.GetEvent()
+	return saveEvents(repo, events)
 }
 
 // New .

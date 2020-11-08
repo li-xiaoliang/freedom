@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.7.18)
 # Database: fshop
-# Generation Time: 2020-03-21 08:40:43 +0000
+# Generation Time: 2020-11-08 06:32:53 +0000
 # ************************************************************
 
 
@@ -57,6 +57,16 @@ CREATE TABLE `cart` (
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='购物车';
 
+LOCK TABLES `cart` WRITE;
+/*!40000 ALTER TABLE `cart` DISABLE KEYS */;
+
+INSERT INTO `cart` (`id`, `user_id`, `goods_id`, `num`, `created`, `updated`)
+VALUES
+	(11,1,1,1,'2020-11-07 17:20:54','2020-11-07 17:20:54'),
+	(12,1,2,1,'2020-11-07 17:20:54','2020-11-07 17:20:54');
+
+/*!40000 ALTER TABLE `cart` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table delivery
@@ -72,6 +82,44 @@ CREATE TABLE `delivery` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='发货存根';
 
+LOCK TABLES `delivery` WRITE;
+/*!40000 ALTER TABLE `delivery` DISABLE KEYS */;
+
+INSERT INTO `delivery` (`id`, `admin_id`, `order_no`, `tracking_number`, `created`, `updated`)
+VALUES
+	(2,1,'1586601953','6791947784987','2020-04-12 18:29:15','2020-04-12 18:29:15'),
+	(3,1,'1586687439','6791947784987','2020-04-12 18:31:14','2020-04-12 18:31:14'),
+	(4,1,'1589704785','6791947784987','2020-05-17 16:40:19','2020-05-17 16:40:19'),
+	(5,1,'1590226363','6791947784987','2020-05-23 17:33:09','2020-05-23 17:33:09'),
+	(6,1,'1590228134','6791947784987','2020-05-23 18:02:52','2020-05-23 18:02:52'),
+	(7,1,'1590815716','6791947784987','2020-05-30 13:15:35','2020-05-30 13:15:35');
+
+/*!40000 ALTER TABLE `delivery` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+# Dump of table domain_event
+# ------------------------------------------------------------
+
+CREATE TABLE `domain_event` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(64) DEFAULT NULL,
+  `send` tinyint(4) DEFAULT NULL COMMENT '0未发送，1发送',
+  `content` text COMMENT '内容',
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+LOCK TABLES `domain_event` WRITE;
+/*!40000 ALTER TABLE `domain_event` DISABLE KEYS */;
+
+INSERT INTO `domain_event` (`id`, `name`, `send`, `content`, `created`, `updated`)
+VALUES
+	(7,'ChangePassword',1,'{\"userID\":3,\"newPassword\":\"123321\",\"oldPassword\":\"123321\"}','2020-11-08 14:28:37','2020-11-08 14:28:37');
+
+/*!40000 ALTER TABLE `domain_event` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table goods
@@ -93,11 +141,11 @@ LOCK TABLES `goods` WRITE;
 
 INSERT INTO `goods` (`id`, `name`, `price`, `stock`, `tag`, `created`, `updated`)
 VALUES
-	(1,'iPhone',500,50,'NONE','2020-01-16 18:06:31','2020-03-04 11:17:17'),
-	(2,'iMac',1000,80,'HOT','2020-01-16 18:06:44','2020-03-14 18:00:39'),
+	(1,'iPhone',500,1903,'NEW','2020-01-16 18:06:31','2020-11-07 17:40:23'),
+	(2,'iMac',1000,399,'HOT','2020-01-16 18:06:44','2020-11-07 17:21:04'),
 	(3,'杜蕾斯',20,50,'NEW','2020-01-16 18:07:02','2020-03-04 11:17:21'),
-	(4,'轩辕剑',600,50,'NONE','2020-01-16 18:07:22','2020-03-04 11:17:22'),
-	(5,'布加迪威龙',3000,40,'HOT','2020-02-18 21:53:51','2020-03-14 18:00:43');
+	(4,'轩辕剑',600,68,'NONE','2020-01-16 18:07:22','2020-11-08 14:29:24'),
+	(5,'布加迪威龙',3000,40,'HOT','2020-02-18 21:53:51','2020-11-07 17:21:06');
 
 /*!40000 ALTER TABLE `goods` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -154,8 +202,9 @@ LOCK TABLES `user` WRITE;
 
 INSERT INTO `user` (`id`, `name`, `money`, `password`, `created`, `updated`)
 VALUES
-	(1,'zhangsan',10000,'123','2020-02-18 21:55:21','2020-02-19 11:06:08'),
-	(2,'lisi',5000,'321','2020-02-18 21:55:29','2020-02-19 11:06:09');
+	(1,'zhangsan',63500,'123','2020-02-18 21:55:21','2020-11-07 17:21:44'),
+	(2,'lisi',100000,'321','2020-02-18 21:55:29','2020-04-12 14:28:32'),
+	(38,'freedom',10000,'123321','2020-11-08 14:32:29','2020-11-08 14:32:29');
 
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;

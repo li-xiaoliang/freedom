@@ -3,6 +3,7 @@ package domain
 import (
 	"github.com/8treenet/freedom/example/fshop/domain/dependency"
 	"github.com/8treenet/freedom/example/fshop/domain/dto"
+	"github.com/8treenet/freedom/infra/transaction"
 
 	"github.com/8treenet/freedom"
 )
@@ -23,8 +24,9 @@ func init() {
 
 // User 用户领域服务.
 type User struct {
-	Worker   freedom.Worker      //运行时，一个请求绑定一个运行时
-	UserRepo dependency.UserRepo //依赖倒置用户资源库
+	Worker   freedom.Worker          //运行时，一个请求绑定一个运行时
+	UserRepo dependency.UserRepo     //依赖倒置用户资源库
+	TX       transaction.Transaction //依赖倒置事务组件
 }
 
 // ChangePassword 修改密码
@@ -40,8 +42,13 @@ func (s *User) ChangePassword(userID int, newPassword, oldPassword string) (e er
 		return
 	}
 
-	//使用用户仓库持久化实体
-	e = s.UserRepo.Save(userEntity)
+	e = s.TX.Execute(func() error {
+		//使用用户仓库持久化实体
+		return s.UserRepo.Save(userEntity)
+	})
+	if e != nil {
+		userEntity.RemoveAllEvent()
+	}
 	s.Worker.Logger().Infof("ChangePassword newPassword:%s oldPassword:%s err:%v", newPassword, oldPassword, e)
 	return
 }

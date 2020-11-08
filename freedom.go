@@ -45,9 +45,6 @@ type (
 	//Entity is the entity's father interface.
 	Entity = internal.Entity
 
-	//DomainEventInfra is a dependency inverted interface for domain events.
-	DomainEventInfra = internal.DomainEventInfra
-
 	//UnitTest is a unit test tool.
 	UnitTest = internal.UnitTest
 
@@ -71,6 +68,9 @@ type (
 
 	//LogRow is the log per line callback.
 	LogRow = golog.Log
+
+	//DomainEvent .
+	DomainEvent = internal.DomainEvent
 )
 
 // NewApplication .
@@ -160,11 +160,11 @@ type Application interface {
 	Iris() *iris.Application
 	Logger() *golog.Logger
 	Run(serve iris.Runner, c iris.Configuration)
-	InstallDomainEventInfra(eventInfra DomainEventInfra)
 	Start(f func(starter Starter))
 	InstallBusMiddleware(handle ...BusHandler)
 	InstallSerializer(marshal func(v interface{}) ([]byte, error), unmarshal func(data []byte, v interface{}) error)
 	CallService(fun interface{}, worker ...Worker)
+	InstallEventPublisher(func(DomainEvent))
 }
 
 //ToWorker the context is converted to a worker.

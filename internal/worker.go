@@ -11,6 +11,11 @@ import (
 	"github.com/kataras/iris/v12/core/memstore"
 )
 
+const (
+	//WorkerKey .
+	WorkerKey = "STORE-WORKER-KEY"
+)
+
 // Worker .
 type Worker interface {
 	IrisContext() iris.Context
@@ -24,6 +29,9 @@ type Worker interface {
 	DeferRecycle()
 	IsDeferRecycle() bool
 	Rand() *rand.Rand
+	PublishEvent()
+	addEvent(DomainEvent)
+	removeEvent(string)
 }
 
 func newWorkerHandle() context.Handler {
@@ -31,11 +39,13 @@ func newWorkerHandle() context.Handler {
 		work := newWorker(ctx)
 		ctx.Values().Set(WorkerKey, work)
 		ctx.Next()
+		work.PublishEvent()
 		if work.IsDeferRecycle() {
 			return
 		}
 		work.logger = nil
 		work.ctx = nil
+		work.events = nil
 		ctx.Values().Reset()
 	}
 }
@@ -49,6 +59,7 @@ func newWorker(ctx iris.Context) *worker {
 	work.stdCtx = ctx.Request().Context()
 	work.time = time.Now()
 	work.deferRecycle = false
+	work.events = map[string][]DomainEvent{}
 	HandleBusMiddleware(work)
 	return work
 }
@@ -65,6 +76,7 @@ type worker struct {
 	values       memstore.Store
 	deferRecycle bool
 	randInstance *rand.Rand
+	events       map[string][]DomainEvent
 }
 
 // Ctx .
@@ -131,4 +143,27 @@ func (rt *worker) Rand() *rand.Rand {
 // SetLogger .
 func (rt *worker) SetLogger(l Logger) {
 	rt.logger = l
+}
+
+// PublishEvent .
+func (rt *worker) PublishEvent() {
+	if globalApp.domainEventPublisher == nil {
+		return
+	}
+	for _, eventList := range rt.events {
+		for _, event := range eventList {
+			globalApp.domainEventPublisher(event)
+		}
+	}
+	rt.events = map[string][]DomainEvent{}
+}
+
+// addEvent.
+func (rt *worker) addEvent(event DomainEvent) {
+	rt.events[event.Name()] = append(rt.events[event.Name()], event)
+}
+
+// removeEvent .
+func (rt *worker) removeEvent(eventName string) {
+	delete(rt.events, eventName)
 }

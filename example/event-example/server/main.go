@@ -28,8 +28,6 @@ func main() {
 	installMiddleware(app)
 	addrRunner := app.NewH2CRunner(conf.Get().App.Other["listen_addr"].(string))
 
-	// Obtain and install the kafka infrastructure for domain events
-	app.InstallDomainEventInfra(kafka.GetDomainEventInfra())
 	//app.InstallParty("/event-example")
 	liveness(app)
 	app.Run(addrRunner, *conf.Get().App)

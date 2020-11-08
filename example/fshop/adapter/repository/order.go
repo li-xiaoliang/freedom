@@ -67,7 +67,7 @@ func (repo *Order) Save(orderEntity *entity.Order) (e error) {
 				return
 			}
 		}
-		return
+		return saveEvents(repo, orderEntity.GetEvent())
 	}
 
 	_, e = saveOrder(repo, &orderEntity.Order)

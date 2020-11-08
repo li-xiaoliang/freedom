@@ -24,7 +24,7 @@ func (g *Goods) Shopping() {
 	*/
 
 	// Trigger domain event, `Goods:Shopping`
-	g.DomainEvent("Goods:Shopping", g.goodsObj)
+	//g.DomainEvent("Goods:Shopping", g.goodsObj)
 }
 
 // Identity .

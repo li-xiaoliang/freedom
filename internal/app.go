@@ -72,11 +72,11 @@ type Application struct {
 	Prometheus *Prometheus
 	// ControllerDep TODO
 	ControllerDep []interface{}
-	eventInfra    DomainEventInfra
 	// unmarshal deserializes [] byte into object
 	unmarshal func(data []byte, v interface{}) error
 	// marshal serializes objects into []byte
-	marshal func(v interface{}) ([]byte, error)
+	marshal              func(v interface{}) ([]byte, error)
+	domainEventPublisher func(DomainEvent)
 }
 
 // InstallParty installs prefixParty of Application
@@ -357,11 +357,6 @@ func (app *Application) installDB() {
 	}
 }
 
-// InstallDomainEventInfra .
-func (app *Application) InstallDomainEventInfra(eventInfra DomainEventInfra) {
-	app.eventInfra = eventInfra
-}
-
 // Logger .
 func (app *Application) Logger() *golog.Logger {
 	return app.IrisApp.Logger()
@@ -383,10 +378,8 @@ func (app *Application) Start(f func(starter Starter)) {
 }
 
 // GetSingleInfra .
-func (app *Application) GetSingleInfra(com interface{}) {
-	if !app.comPool.GetSingleInfra(reflect.ValueOf(com).Elem()) {
-		app.IrisApp.Logger().Errorf("[Freedom] GetSingleInfra: Gets an unimplemented component, %v", com)
-	}
+func (app *Application) GetSingleInfra(com interface{}) bool {
+	return app.comPool.GetSingleInfra(reflect.ValueOf(com).Elem())
 }
 
 func (app *Application) addMiddlewares(irisConf iris.Configuration) {
@@ -419,4 +412,9 @@ func (app *Application) InstallSerializer(marshal func(v interface{}) ([]byte, e
 // CallService .
 func (app *Application) CallService(fun interface{}, worker ...Worker) {
 	callService(fun, worker...)
+}
+
+// InstallEventPublisher .
+func (app *Application) InstallEventPublisher(call func(DomainEvent)) {
+	app.domainEventPublisher = call
 }

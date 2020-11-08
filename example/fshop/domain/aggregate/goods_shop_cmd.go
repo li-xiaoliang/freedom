@@ -6,6 +6,7 @@ import (
 
 	"github.com/8treenet/freedom/example/fshop/domain/dependency"
 	"github.com/8treenet/freedom/example/fshop/domain/entity"
+	"github.com/8treenet/freedom/example/fshop/domain/event"
 	"github.com/8treenet/freedom/example/fshop/domain/po"
 	"github.com/8treenet/freedom/infra/transaction"
 )
@@ -38,6 +39,14 @@ func (cmd *GoodsShopCmd) Shop() error {
 	//增加订单的商品详情
 	cmd.AddOrderDetal(&po.OrderDetail{OrderNo: cmd.OrderNo, GoodsID: cmd.goodsEntity.ID, GoodsName: cmd.goodsEntity.Name, Num: cmd.goodsNum, Created: time.Now(), Updated: time.Now()})
 
+	//增加领域事件
+	cmd.Order.AddEvent(&event.ShopGoods{
+		UserID:    cmd.UserID,
+		OrderNO:   cmd.OrderNo,
+		GoodsID:   cmd.goodsEntity.ID,
+		GoodsNum:  cmd.goodsNum,
+		GoodsName: cmd.goodsEntity.Name,
+	})
 	//事务执行 创建 订单表、订单详情表，修改商品表的库存
 	e := cmd.tx.Execute(func() error {
 		if e := cmd.orderRepo.Save(&cmd.Order); e != nil {
@@ -49,11 +58,8 @@ func (cmd *GoodsShopCmd) Shop() error {
 		return nil
 	})
 
-	if e == nil {
-		//发布领域事件，该商品被下单
-		//需要配置 server/conf/infra/kafka.toml 生产者相关配置
-		cmd.goodsEntity.DomainEvent("goods-shop", cmd.goodsEntity.ID)
+	if e != nil {
+		cmd.RemoveAllEvent()
 	}
-
 	return e
 }

@@ -79,3 +79,8 @@ func (infra *Infra) InjectBaseEntitys(entitys interface{}) {
 func (infra *Infra) GetWorker() Worker {
 	return infra.Worker
 }
+
+// GetSingleInfra .
+func (infra *Infra) GetSingleInfra(com interface{}) bool {
+	return globalApp.GetSingleInfra(com)
+}

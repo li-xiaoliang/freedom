@@ -6,6 +6,7 @@ import (
 
 	"github.com/8treenet/freedom/example/fshop/domain/dependency"
 	"github.com/8treenet/freedom/example/fshop/domain/entity"
+	"github.com/8treenet/freedom/example/fshop/domain/event"
 	"github.com/8treenet/freedom/example/fshop/domain/po"
 	"github.com/8treenet/freedom/infra/transaction"
 )
@@ -46,6 +47,15 @@ func (cmd *CartShopCmd) Shop() error {
 
 		//增加订单的商品详情
 		cmd.AddOrderDetal(&po.OrderDetail{OrderNo: cmd.OrderNo, GoodsID: goodsEntity.ID, GoodsName: goodsEntity.Name, Num: cmd.allCartEntity[i].Num, Created: time.Now(), Updated: time.Now()})
+
+		//增加领域事件
+		cmd.Order.AddEvent(&event.ShopGoods{
+			UserID:    cmd.userEntity.ID,
+			OrderNO:   cmd.OrderNo,
+			GoodsID:   goodsEntity.ID,
+			GoodsNum:  cmd.allCartEntity[i].Num,
+			GoodsName: goodsEntity.Name,
+		})
 	}
 
 	//设置订单总价格
@@ -68,12 +78,7 @@ func (cmd *CartShopCmd) Shop() error {
 	})
 
 	if e != nil {
-		return e
-	}
-	for _, goodsEntity := range cmd.goodsEntityMap {
-		//发布领域事件，该商品被下单
-		//需要配置 server/conf/infra/kafka.toml 生产者相关配置
-		goodsEntity.DomainEvent("goods-shop", goodsEntity.ID)
+		cmd.RemoveAllEvent()
 	}
 	return e
 }

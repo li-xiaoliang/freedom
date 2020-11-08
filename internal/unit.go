@@ -20,8 +20,7 @@ type UnitTest interface {
 	Run()
 	SetRequest(request *http.Request)
 	InjectBaseEntity(entity interface{})
-	InstallDomainEventInfra(eventInfra DomainEventInfra)
-	NewDomainEventInfra(call ...func(producer, topic string, data []byte, header map[string]string)) DomainEventInfra
+	InstallEventPublisher(call func(DomainEvent))
 }
 
 // UnitTestImpl .
@@ -108,36 +107,9 @@ func (u *UnitTestImpl) SetRequest(request *http.Request) {
 	u.request = request
 }
 
-// InstallDomainEventInfra .
-func (u *UnitTestImpl) InstallDomainEventInfra(eventInfra DomainEventInfra) {
-	globalApp.InstallDomainEventInfra(eventInfra)
-}
-
-type logEvent struct {
-	call func(producer, topic string, data []byte, header map[string]string)
-}
-
-// DomainEvent .
-func (log *logEvent) DomainEvent(producer, topic string, data []byte, Worker Worker, header ...map[string]string) {
-	h := map[string]string{}
-	if len(header) > 0 {
-		h = header[0]
-	}
-
-	if log.call != nil {
-		log.call(producer, topic, data, h)
-		return
-	}
-	Worker.Logger().Infof("Domain event:  %s   %s   %v", topic, string(data), header, h)
-}
-
-// NewDomainEventInfra .
-func (u *UnitTestImpl) NewDomainEventInfra(call ...func(producer, topic string, data []byte, header map[string]string)) DomainEventInfra {
-	result := new(logEvent)
-	if len(call) > 0 {
-		result.call = call[0]
-	}
-	return result
+// InstallEventPublisher .
+func (u *UnitTestImpl) InstallEventPublisher(call func(DomainEvent)) {
+	globalApp.InstallEventPublisher(call)
 }
 
 // InjectBaseEntity .
