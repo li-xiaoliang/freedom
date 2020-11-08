@@ -27,7 +27,7 @@ func main() {
 	addrRunner := app.NewH2CRunner(conf.Get().App.Other["listen_addr"].(string))
 	//app.InstallParty("/fshop")
 	liveness(app)
-	//安装领域事件发布者,请求结束会自动发布 或使用 Worker.PublishEvent() 手动发布
+	//安装领域事件发布者,每一个请求结束后会自动发布， 或使用 Worker.PublishEvent() 手动发布
 	app.InstallEventPublisher(repository.GetEventManager().PublishHandle)
 	app.Run(addrRunner, *conf.Get().App)
 }

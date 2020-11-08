@@ -27,7 +27,7 @@ func fixedTime(app freedom.Application) {
 		t := time.NewTimer(15 * time.Second)
 		for range t.C {
 			app.CallService(func(goodsService *domain.Goods) {
-				goodsService.AddStock(4, 1)
+				goodsService.MarkedTag(4, "HOT")
 			})
 			t.Reset(15 * time.Second)
 		}
