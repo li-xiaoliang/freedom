@@ -49,7 +49,7 @@ func eventLoop(app freedom.Application) {
 				}
 				app.CallService(func(goodsService *domain.Goods) {
 					//收到购买事件，自动增加库存。
-					goodsService.AddStockEvent(shopEvent.GoodsID, shopEvent.GoodsNum, shopEvent)
+					goodsService.ShopEvent(shopEvent)
 				})
 			}
 		}

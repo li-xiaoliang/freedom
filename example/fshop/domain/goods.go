@@ -5,6 +5,7 @@ import (
 	"github.com/8treenet/freedom/example/fshop/domain/dependency"
 	"github.com/8treenet/freedom/example/fshop/domain/dto"
 	"github.com/8treenet/freedom/example/fshop/domain/entity"
+	"github.com/8treenet/freedom/example/fshop/domain/event"
 	"github.com/8treenet/freedom/infra/transaction"
 
 	"github.com/8treenet/freedom"
@@ -70,16 +71,17 @@ func (g *Goods) AddStock(goodsID, num int) (e error) {
 	return g.GoodsRepo.Save(entity)
 }
 
-// AddStockEvent 增加商品库存
-func (g *Goods) AddStockEvent(goodsID, num int, event freedom.DomainEvent) (e error) {
-	entity, e := g.GoodsRepo.Get(goodsID)
+// ShopEvent 购买事件 这里只是增加了该商品的库存
+func (g *Goods) ShopEvent(event *event.ShopGoods) (e error) {
+	entity, e := g.GoodsRepo.Get(event.GoodsID)
 	if e != nil {
-		g.Worker.Logger().Error("商品库存失败", freedom.LogFields{"goodsId": goodsID, "num": num})
+		g.Worker.Logger().Error("商品库存失败", freedom.LogFields{"goodsId": event.GoodsID, "num": event.GoodsNum})
 		return
 	}
+
+	g.Worker.Logger().Info("增加库存", freedom.LogFields{"goodsId": event.GoodsID, "num": event.GoodsNum})
+	entity.AddStock(event.GoodsNum)
 	entity.AddSubEvent(event)
-	g.Worker.Logger().Info("增加库存", freedom.LogFields{"goodsId": goodsID, "num": num})
-	entity.AddStock(num)
 
 	e = g.TX.Execute(func() error {
 		return g.GoodsRepo.Save(entity)
