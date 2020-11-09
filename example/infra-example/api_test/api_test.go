@@ -1,4 +1,4 @@
-package controllers
+package api_test
 
 import (
 	"testing"

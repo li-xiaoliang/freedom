@@ -2,6 +2,7 @@ package repository
 
 import (
 	"github.com/8treenet/freedom"
+	"github.com/8treenet/freedom/example/fshop/domain/entity"
 	"github.com/8treenet/freedom/example/infra-example/domain/po"
 	"github.com/jinzhu/gorm"
 )
@@ -20,15 +21,25 @@ type GoodsRepository struct {
 }
 
 // Get .
-func (repo *GoodsRepository) Get(ID int) (result po.Goods, e error) {
+func (repo *GoodsRepository) Get(ID int) (result *entity.Goods, e error) {
+	result = &entity.Goods{}
 	result.ID = ID
-	e = findGoods(repo, &result)
+	//注入基础Entity 包含运行时和领域事件集合.
+	repo.InjectBaseEntity(goodsEntity)
+
+	e = findGoods(repo, result)
 	return
 }
 
 // GetAll .
-func (repo *GoodsRepository) GetAll() (result []po.Goods, e error) {
+func (repo *GoodsRepository) GetAll() (result []*entity.Goods, e error) {
 	e = findGoodsList(repo, po.Goods{}, &result)
+	if e != nil {
+		return
+	}
+
+	//注入基础Entity 包含运行时和领域事件集合.
+	repo.InjectBaseEntitys(entitys)
 	return
 }
 

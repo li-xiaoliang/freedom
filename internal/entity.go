@@ -51,7 +51,7 @@ func injectBaseEntity(run Worker, entityObject interface{}) {
 	e.subEvents = map[string][]DomainEvent{}
 	eValue := reflect.ValueOf(e)
 	if entityField.Kind() != reflect.Interface || !eValue.Type().Implements(entityField.Type()) {
-		globalApp.Logger().Fatalf("[Freedom] InjectBaseEntity: This is not a legitimate entity, %v", entityObjectValue.Type())
+		panic("[Freedom] InjectBaseEntity: This is not a legitimate entity, %v", entityObjectValue.Type())
 	}
 	entityField.Set(eValue)
 	return

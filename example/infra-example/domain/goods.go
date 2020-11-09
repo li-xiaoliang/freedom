@@ -21,29 +21,29 @@ func init() {
 // GoodsService .
 type GoodsService struct {
 	Worker    freedom.Worker
-	GoodsRepo repository.GoodsInterface
+	GoodsRepo *repository.GoodsRepository
 }
 
 // Get .
 func (srv *GoodsService) Get(ID int) (rep dto.GoodsRep, e error) {
-	obj, e := srv.GoodsRepo.Get(ID)
+	entity, e := srv.GoodsRepo.Get(ID)
 	if e != nil {
 		return
 	}
-	rep.ID = obj.ID
-	rep.Name = obj.Name
-	rep.Stock = obj.Stock
-	rep.Price = obj.Price
+	rep.ID = entity.ID
+	rep.Name = entity.Name
+	rep.Stock = entity.Stock
+	rep.Price = entity.Price
 	return
 }
 
 // GetAll .
 func (srv *GoodsService) GetAll() (result []dto.GoodsRep, e error) {
-	objs, e := srv.GoodsRepo.GetAll()
+	entitys, e := srv.GoodsRepo.GetAll()
 	if e != nil {
 		return
 	}
-	for _, goodsModel := range objs {
+	for _, goodsModel := range entitys {
 		result = append(result, dto.GoodsRep{
 			ID:    goodsModel.ID,
 			Name:  goodsModel.Name,
@@ -56,11 +56,11 @@ func (srv *GoodsService) GetAll() (result []dto.GoodsRep, e error) {
 
 // AddStock .
 func (srv *GoodsService) AddStock(goodsID, num int) error {
-	obj, e := srv.GoodsRepo.Get(goodsID)
+	entity, e := srv.GoodsRepo.Get(goodsID)
 	if e != nil {
 		return e
 	}
 
-	obj.AddStock(num)
-	return srv.GoodsRepo.Save(&obj)
+	entity.AddStock(num)
+	return srv.GoodsRepo.Save(&entity)
 }
